@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My project</title>
+  <link rel="stylesheet" href="./project.css">
+</head>
+
+<body>
+
+  <div id="posts"></div>
+
+  <div class="pagination">
+    <button id="prev">Prev</button>
+    <span id="page"></span>
+    <button id="next">Next</button>
+  </div>
+
+  <script id="posts-template" type="text/x-handlebars-template">
+    <ul class="posts">
+      {{#each this}}
+        <li class="post">
+          <h3 class="h3-first-sec">{{title}}</h3>
+          <p class="P-FIRST-sec">{{body}}</p>
+        </li>
+      {{/each}}
+    </ul>
+  </script>
+  <h1>Навчальний проєкт</h1>
+  <section class="task task-async">
+    <h2>Асинхронне завантаження даних</h2>
+
+    <div id="async-posts-container"></div>
+
+    <div class="async-pagination">
+      <button id="async-prev-btn">Prev</button>
+      <span id="async-page-info"></span>
+      <button id="async-next-btn">Next</button>
+    </div>
+  </section>
+  <script id="async-posts-template" type="text/x-handlebars-template">
+    <ul class="async-posts-list">
+      {{#each this}}
+        <li class="async-post-item">
+          <h3>{{title}}</h3>
+          <p>{{body}}</p>
+        </li>
+      {{/each}}
+    </ul>
+     <!-- <input type="text" id="name" placeholder="Ім'я">
+  <button id="addBtn">Додати</button>
+
+  <ul id="userList"></ul> -->
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+
+  <script src="./project.js"></script>
+</body>
+
+</html>

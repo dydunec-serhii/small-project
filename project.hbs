@@ -1,0 +1,11 @@
+<ul class="posts">
+  {{#each this}}
+    <li class="post">
+      <h3>{{title}}</h3>
+      <p>
+        Статус:
+        {{#if completed}}виконано{{else}} не виконано{{/if}}
+      </p>
+    </li>
+  {{/each}}
+</ul>

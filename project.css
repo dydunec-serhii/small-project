@@ -1,0 +1,32 @@
+/* <ul class="posts">
+      {{#each this}}
+        <li class="post">
+          <h3 class="h3-first-sec">{{title}}</h3>
+          <p class="P-FIRST-sec">{{body}}</p>
+        </li>
+      {{/each}}
+    </ul> */
+
+.h3-first-sec {
+    display: flex;
+    justify-content: center;
+
+}
+
+.P-FIRST-sec {
+    display: flex;
+    justify-content: center;
+
+}
+
+ul {
+    list-style: none;
+}
+
+#posts {
+    width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    outline: solid 2px;
+    
+}

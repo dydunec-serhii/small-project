@@ -1,32 +1,123 @@
-/* <ul class="posts">
-      {{#each this}}
-        <li class="post">
-          <h3 class="h3-first-sec">{{title}}</h3>
-          <p class="P-FIRST-sec">{{body}}</p>
-        </li>
-      {{/each}}
-    </ul> */
-
-.h3-first-sec {
-    display: flex;
-    justify-content: center;
-
+body {
+  font-family: Arial, sans-serif;
+  background: #f7f7f7;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #333;
 }
 
-.P-FIRST-sec {
-    display: flex;
-    justify-content: center;
+h1, h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
 
+h3 {
+  margin: 10px 0 5px;
+}
+
+input, button {
+  font-size: 16px;
+  padding: 8px 12px;
+  margin: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+}
+
+input:focus {
+  border-color: #5a8dee;
+  box-shadow: 0 0 4px rgba(90,141,238,0.3);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: #5a8dee;
+  color: #fff;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #4173d1;
 }
 
 ul {
-    list-style: none;
+  list-style: none;
+  padding: 0;
+  width: 90%;
+  max-width: 1000px;
+  margin-bottom: 20px;
 }
 
-#posts {
-    width: 800px;
-    margin: 0 auto;
-    text-align: center;
-    outline: solid 2px;
-    
+li {
+  background: #fff;
+  padding: 10px 15px;
+  margin-bottom: 8px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+li:hover {
+  background: #f0f3ff;
+  transform: translateX(2px);
+}
+
+button.deleteBtn {
+  background: #ff5252;
+  color: white;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-weight: bold;
+  line-height: 20px;
+  text-align: center;
+  padding: 0;
+}
+
+button.deleteBtn:hover {
+  background: #e63939;
+}
+.posts, .async-posts-list {
+  list-style: none;
+  padding: 0;
+  width: 90%;
+  max-width: 1000px;
+}
+
+.posts li, .async-posts-list li {
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  transition: 0.2s;
+}
+
+.posts li:hover, .async-posts-list li:hover {
+  background: #f0f3ff;
+}
+
+.pagination, .async-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0 30px;
+}
+
+.pagination button, .async-pagination button {
+  margin: 0 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+.pagination span, .async-pagination span {
+  font-weight: bold;
+  margin: 0 10px;
 }

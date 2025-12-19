@@ -5,87 +5,86 @@ const pageText = document.getElementById('page');
 
 const ITEMS_PER_PAGE = 5;
 let currentPage = 1;
-let todos = [];
+let posts = [];
+
 const source = document.getElementById('posts-template').innerHTML;
 const template = Handlebars.compile(source);
 
-function renderPage() {
+async function loadPosts() {
+  try {
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
+    posts = data.slice(0, 30);
+    renderPosts();
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function renderPosts() {
   const start = (currentPage - 1) * ITEMS_PER_PAGE;
   const end = start + ITEMS_PER_PAGE;
-  const pageItems = todos.slice(start, end);
-
+  const pageItems = posts.slice(start, end);
   postsContainer.innerHTML = template(pageItems);
   pageText.textContent = `Page ${currentPage}`;
 }
 
-fetch('https://jsonplaceholder.typicode.com/posts')
-  .then(res => res.json())
-  .then(data => {
-    todos = data.slice(0, 30);
-    renderPage();
-  });
-
-nextBtn.addEventListener('click', () => {
-  if (currentPage * ITEMS_PER_PAGE < todos.length) {
-    currentPage++;
-    renderPage();
-  }
-});
-
 prevBtn.addEventListener('click', () => {
   if (currentPage > 1) {
     currentPage--;
-    renderPage();
+    renderPosts();
+  }
+});
+nextBtn.addEventListener('click', () => {
+  if (currentPage * ITEMS_PER_PAGE < posts.length) {
+    currentPage++;
+    renderPosts();
   }
 });
 
-const asyncPostsContainer = document.getElementById('async-posts-container');
+loadPosts();
+
+const asyncContainer = document.getElementById('async-posts-container');
 const asyncPrevBtn = document.getElementById('async-prev-btn');
 const asyncNextBtn = document.getElementById('async-next-btn');
 const asyncPageInfo = document.getElementById('async-page-info');
 
-const ASYNC_ITEMS_PER_PAGE = 5;
-let asyncCurrentPage = 1;
+const ASYNC_ITEMS = 5;
+let asyncCurrent = 1;
 let asyncPosts = [];
 
-const asyncTemplateSource = document.getElementById('async-posts-template').innerHTML;
-const asyncTemplate = Handlebars.compile(asyncTemplateSource);
-
-function renderAsyncPage() {
-  const start = (asyncCurrentPage - 1) * ASYNC_ITEMS_PER_PAGE;
-  const end = start + ASYNC_ITEMS_PER_PAGE;
-  const pageItems = asyncPosts.slice(start, end);
-
-  asyncPostsContainer.innerHTML = asyncTemplate(pageItems);
-  asyncPageInfo.textContent = `Page ${asyncCurrentPage}`;
-}
+const asyncTemplate = Handlebars.compile(
+  document.getElementById('async-posts-template').innerHTML
+);я
 
 async function loadAsyncPosts() {
   try {
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-
-    if (!response.ok) {
-      throw new Error('Помилка завантаження даних');
-    }
-
-    const data = await response.json();
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const data = await res.json();
     asyncPosts = data.slice(0, 30);
-
-    renderAsyncPage();
-  } catch (error) { console.error(error); }
+    renderAsync();
+  } catch (err) {
+    console.error(err);
+  }
 }
 
-asyncNextBtn.addEventListener('click', () => {
-  if (asyncCurrentPage * ASYNC_ITEMS_PER_PAGE < asyncPosts.length) {
-    asyncCurrentPage++;
-    renderAsyncPage();
-  }
-});
+function renderAsync() {
+  const start = (asyncCurrent - 1) * ASYNC_ITEMS;
+  const end = start + ASYNC_ITEMS;
+  asyncContainer.innerHTML = asyncTemplate(asyncPosts.slice(start, end));
+  asyncPageInfo.textContent = `Page ${asyncCurrent}`;
+}
 
 asyncPrevBtn.addEventListener('click', () => {
-  if (asyncCurrentPage > 1) {
-    asyncCurrentPage--;
-    renderAsyncPage();
+  if (asyncCurrent > 1) {
+    asyncCurrent--;
+    renderAsync();
+  }
+});
+asyncNextBtn.addEventListener('click', () => {
+  if (asyncCurrent * ASYNC_ITEMS < asyncPosts.length) {
+    asyncCurrent++;
+    renderAsync();
   }
 });
 
@@ -94,66 +93,94 @@ loadAsyncPosts();
 const userList = document.getElementById('userList');
 const addBtn = document.getElementById('addBtn');
 const nameInput = document.getElementById('name');
+const searchInput = document.getElementById('searchInput');
 
-const API_URL = 'https://jsonplaceholder.typicode.com/posts';
+let localData = [];
 
-// READ
-async function getUsers() {
-  try {
-    const res = await fetch(API_URL);
-    const users = await res.json();
+function renderUsers(filter = '') {
+  userList.innerHTML = '';
 
-    userList.innerHTML = '';
-
-    users.slice(0, 10).forEach(user => {
+  localData
+    .filter(u => u.title.toLowerCase().includes(filter.toLowerCase()))
+    .forEach(user => {
       const li = document.createElement('li');
-      li.innerHTML = `
-        ${user.title}
-        <button onclick="deleteUser(${user.id})">-</button>
-      `;
+
+      const titleDiv = document.createElement('div');
+      titleDiv.textContent = user.title;
+      titleDiv.style.fontWeight = 'bold';
+
+      const commentsList = document.createElement('ul');
+      commentsList.style.marginTop = '5px';
+
+      user.comments.forEach(comment => {
+        const commentLi = document.createElement('li');
+        commentLi.textContent = comment;
+        commentLi.style.fontSize = '0.9em';
+        commentLi.style.color = '#555';
+        commentsList.appendChild(commentLi);
+      });
+
+      const commentInput = document.createElement('input');
+      commentInput.placeholder = 'Додати коментар';
+      commentInput.style.marginRight = '5px';
+
+      const commentBtn = document.createElement('button');
+      commentBtn.textContent = '+';
+      commentBtn.style.padding = '2px 6px';
+
+      commentBtn.onclick = () => {
+        const text = commentInput.value.trim();
+        if (!text) return;
+        user.comments.push(text);
+        commentInput.value = '';
+        renderUsers(searchInput.value);
+      };
+
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '-';
+      delBtn.classList.add('deleteBtn');
+      delBtn.onclick = () => deleteUser(user.id);
+
+      li.appendChild(titleDiv);
+      li.appendChild(delBtn);
+      li.appendChild(commentsList);
+      li.appendChild(commentInput);
+      li.appendChild(commentBtn);
+
+      li.style.display = 'flex';
+      li.style.flexDirection = 'column';
+      li.style.padding = '10px';
+      li.style.border = '1px solid #ccc';
+      li.style.borderRadius = '6px';
+      li.style.marginBottom = '8px';
+      li.style.background = '#fff';
+
       userList.appendChild(li);
     });
-  } catch (error) {
-    console.error(error);
-  }
 }
 
-// CREATE
-async function addUser() {
+function addUser() {
   const title = nameInput.value.trim();
   if (!title) return;
 
-  try {
-    await fetch(API_URL, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json; charset=UTF-8"
-      },
-      body: JSON.stringify({
-        title,
-        body: 'Test text',
-        userId: 1
-      })
-    });
+  localData.push({
+    id: Date.now(),
+    title,
+    comments: []
+  });
 
-    nameInput.value = '';
-    getUsers();
-  } catch (error) {
-    console.error(error);
-  }
+  nameInput.value = '';
+  renderUsers(searchInput.value);
 }
 
-// DELETE
-async function deleteUser(id) {
-  try {
-    await fetch(`${API_URL}/${id}`, {
-      method: 'DELETE'
-    });
-    getUsers();
-  } catch (error) {
-    console.error(error);
-  }
+function deleteUser(id) {
+  localData = localData.filter(u => u.id !== id);
+  renderUsers(searchInput.value);
 }
+
+searchInput.addEventListener('input', () => {
+  renderUsers(searchInput.value);
+});
 
 addBtn.addEventListener('click', addUser);
-getUsers();
+renderUsers();

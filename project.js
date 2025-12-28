@@ -55,7 +55,7 @@ let asyncPosts = [];
 
 const asyncTemplate = Handlebars.compile(
   document.getElementById('async-posts-template').innerHTML
-);я
+);
 
 async function loadAsyncPosts() {
   try {
